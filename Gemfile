@@ -1,0 +1,7 @@
+source 'http://rubygems.org'
+ruby '2.0.0'
+gem 'sinatra', '~> 1.4'
+gem 'rmagick', '~> 2.13', :require => 'RMagick'
+gem 'rack-contrib'
+gem 'punycode4r', '~> 0.2.0'
+gem 'rake'

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8" />
+        <title>frame</title>
+        <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    </head>
+    <body>
+        <div id="list">
+<% images.each do |item| %>
+            <img src="data:image/gif;base64,<%= Base64.encode64(item.to_blob) %>" />
+<% end %>
+        </div>
+    </body>
+</html>
