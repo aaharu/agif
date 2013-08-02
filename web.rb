@@ -84,14 +84,50 @@ get '/gif/playback' do
         res = Net::HTTP.start(uri.host, uri.port) {|http|
             http.get(uri.path)
         }
-        image = Magick::Image.from_blob(res.body).reverse!
-
+        image = Magick::Image.from_blob(res.body)
         list = Magick::ImageList.new
-        index = 0
-        image.each do |frame|
+        over = nil
+        over_list = Array.new
+        image.each_with_index do |frame, index|
+            bg = frame.background_color.to_s
+            if bg.length == 8 && bg =~ /00$/
+                over = frame
+            elsif index == 0 then
+                over = frame
+            else
+                over = over.composite(frame, frame.gravity, frame.page.x, frame.page.y, Magick::OverCompositeOp)
+                over.delay = frame.delay
+            end
+            over_list.push(over)
+        end
+        over_list.reverse!
+        over_list.each do |frame|
+            list.push(frame)
+        end
+        list.optimize_layers(Magick::OptimizeLayer)
+        list.iterations = 65535
+    rescue Exception => e
+        logger.error e.to_s
+        halt 500, 'error'
+    end
+
+    expires 259200, :public
+    content_type :gif
+    list.to_blob
+end
+
+get '/gif/playback/simple/*' do |url|
+    begin
+        url = buildUrl(url)
+        uri = URI.parse(url)
+        res = Net::HTTP.start(uri.host, uri.port) {|http|
+            http.get(uri.path)
+        }
+        image = Magick::Image.from_blob(res.body).reverse!
+        list = Magick::ImageList.new
+        image.each_with_index do |frame, index|
             list.push(frame)
             list[index].delay = frame.delay
-            index += 1
         end
         list.iterations = 65535
     rescue Exception => e
@@ -111,15 +147,27 @@ get '/gif/playback/*' do |url|
         res = Net::HTTP.start(uri.host, uri.port) {|http|
             http.get(uri.path)
         }
-        image = Magick::Image.from_blob(res.body).reverse!
-
+        image = Magick::Image.from_blob(res.body)
         list = Magick::ImageList.new
-        index = 0
-        image.each do |frame|
-            list.push(frame)
-            list[index].delay = frame.delay
-            index += 1
+        over = nil
+        over_list = Array.new
+        image.each_with_index do |frame, index|
+            bg = frame.background_color.to_s
+            if bg.length == 8 && bg =~ /00$/
+                over = frame
+            elsif index == 0 then
+                over = frame
+            else
+                over = over.composite(frame, frame.gravity, frame.page.x, frame.page.y, Magick::OverCompositeOp)
+                over.delay = frame.delay
+            end
+            over_list.push(over)
         end
+        over_list.reverse!
+        over_list.each do |frame|
+            list.push(frame)
+        end
+        list.optimize_layers(Magick::OptimizeLayer)
         list.iterations = 65535
     rescue Exception => e
         logger.error e.to_s
