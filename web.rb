@@ -23,7 +23,7 @@ def buildUrl(url)
         words = $1.split('.')
         words.each_with_index {|word, i|
             next if word =~ /[0-9a-z\-]/
-                words[i] = "xn--#{Punycode.encode(word)}"
+            words[i] = "xn--#{Punycode.encode(word)}"
         }
         "://#{words.join('.')}"
     }
@@ -31,8 +31,8 @@ def buildUrl(url)
 end
 
 get '/' do
-    expires 60, :private, :must_revalidate
-    'hello'
+    expires 3600, :private, :must_revalidate
+    erb :index
 end
 
 get '/gif/frame' do
@@ -40,6 +40,37 @@ get '/gif/frame' do
     unless url then
         halt 400, 'no url parameter'
     end
+    begin
+        url = buildUrl(url)
+        uri = URI.parse(url)
+        res = Net::HTTP.start(uri.host, uri.port) {|http|
+            http.get(uri.path)
+        }
+        image = Magick::Image.from_blob(res.body)
+        over = nil
+        over_list = Array.new
+        image.each_with_index do |frame, index|
+            if index == 0
+                over = frame
+            else
+                unless frame.background_color.to_s =~ /#[0-9A-F]{6,8}$/
+                    over = frame
+                else
+                    over = over.composite(frame, frame.gravity, frame.page.x, frame.page.y, Magick::OverCompositeOp)
+                end
+            end
+            over_list.push(over)
+        end
+    rescue Exception => e
+        logger.error e.to_s
+        halt 500, 'error'
+    end
+
+    expires 259200, :public
+    erb :frame, :locals => {:images => over_list}
+end
+
+get '/gif/frame/simple/*' do |url|
     begin
         url = buildUrl(url)
         uri = URI.parse(url)
@@ -64,13 +95,27 @@ get '/gif/frame/*' do |url|
             http.get(uri.path)
         }
         image = Magick::Image.from_blob(res.body)
+        over = nil
+        over_list = Array.new
+        image.each_with_index do |frame, index|
+            if index == 0
+                over = frame
+            else
+                unless frame.background_color.to_s =~ /#[0-9A-F]{6,8}$/
+                    over = frame
+                else
+                    over = over.composite(frame, frame.gravity, frame.page.x, frame.page.y, Magick::OverCompositeOp)
+                end
+            end
+            over_list.push(over)
+        end
     rescue Exception => e
         logger.error e.to_s
         halt 500, 'error'
     end
 
     expires 259200, :public
-    erb :frame, :locals => {:images => image}
+    erb :frame, :locals => {:images => over_list}
 end
 
 get '/gif/playback' do
@@ -89,14 +134,15 @@ get '/gif/playback' do
         over = nil
         over_list = Array.new
         image.each_with_index do |frame, index|
-            bg = frame.background_color.to_s
-            if bg.length == 8 && bg =~ /00$/
-                over = frame
-            elsif index == 0 then
+            if index == 0
                 over = frame
             else
-                over = over.composite(frame, frame.gravity, frame.page.x, frame.page.y, Magick::OverCompositeOp)
-                over.delay = frame.delay
+                unless frame.background_color.to_s =~ /#[0-9A-F]{6,8}$/
+                    over = frame
+                else
+                    over = over.composite(frame, frame.gravity, frame.page.x, frame.page.y, Magick::OverCompositeOp)
+                    over.delay = frame.delay
+                end
             end
             over_list.push(over)
         end
@@ -152,14 +198,15 @@ get '/gif/playback/*' do |url|
         over = nil
         over_list = Array.new
         image.each_with_index do |frame, index|
-            bg = frame.background_color.to_s
-            if bg.length == 8 && bg =~ /00$/
-                over = frame
-            elsif index == 0 then
+            if index == 0
                 over = frame
             else
-                over = over.composite(frame, frame.gravity, frame.page.x, frame.page.y, Magick::OverCompositeOp)
-                over.delay = frame.delay
+                unless frame.background_color.to_s =~ /#[0-9A-F]{6,8}$/
+                    over = frame
+                else
+                    over = over.composite(frame, frame.gravity, frame.page.x, frame.page.y, Magick::OverCompositeOp)
+                    over.delay = frame.delay
+                end
             end
             over_list.push(over)
         end
