@@ -7,6 +7,7 @@ require 'net/http'
 require 'rack/contrib'
 require 'base64'
 require 'punycode'
+require 'iron_cache'
 
 use Rack::Deflater
 use Rack::StaticCache, :urls => ['/favicon.ico', '/robots.txt'], :root => 'public'
@@ -187,38 +188,54 @@ get '/gif/playback/simple/*' do |url|
 end
 
 get '/gif/playback/*' do |url|
+    url = buildUrl(url)
     begin
-        url = buildUrl(url)
-        uri = URI.parse(url)
-        res = Net::HTTP.start(uri.host, uri.port) {|http|
-            http.get(uri.path)
-        }
-        image = Magick::Image.from_blob(res.body)
-        list = Magick::ImageList.new
-        over = nil
-        over_list = Array.new
-        image.each_with_index do |frame, index|
-            if index == 0
-                over = frame
-            else
-                unless frame.background_color.to_s =~ /#[0-9A-F]{6,8}$/
+        cache = IronCache::Client.new.cache('playback_cache')
+        item = cache.get(Base64.urlsafe_encode64(url))
+        if item
+            list = Magick::ImageList.new.from_blob(Base64.urlsafe_decode64(item.value))
+        end
+    rescue Exception => e
+        logger.warn e.to_s
+    end
+    begin
+        unless list
+            uri = URI.parse(url)
+            res = Net::HTTP.start(uri.host, uri.port) {|http|
+                http.get(uri.path)
+            }
+            image = Magick::Image.from_blob(res.body)
+            list = Magick::ImageList.new
+            over = nil
+            over_list = Array.new
+            image.each_with_index do |frame, index|
+                if index == 0
                     over = frame
                 else
-                    over = over.composite(frame, frame.gravity, frame.page.x, frame.page.y, Magick::OverCompositeOp)
-                    over.delay = frame.delay
+                    unless frame.background_color.to_s =~ /#[0-9A-F]{6,8}$/
+                        over = frame
+                    else
+                        over = over.composite(frame, frame.gravity, frame.page.x, frame.page.y, Magick::OverCompositeOp)
+                        over.delay = frame.delay
+                    end
                 end
+                over_list.push(over)
             end
-            over_list.push(over)
+            over_list.reverse!
+            over_list.each do |frame|
+                list.push(frame)
+            end
+            list.optimize_layers(Magick::OptimizeLayer)
+            list.iterations = 65535
         end
-        over_list.reverse!
-        over_list.each do |frame|
-            list.push(frame)
-        end
-        list.optimize_layers(Magick::OptimizeLayer)
-        list.iterations = 65535
     rescue Exception => e
         logger.error e.to_s
         halt 500, 'error'
+    end
+    begin
+        cache.put(Base64.urlsafe_encode64(url), Base64.urlsafe_encode64(list.to_blob))
+    rescue Exception => e
+        logger.warn e.to_s
     end
 
     expires 259200, :public
