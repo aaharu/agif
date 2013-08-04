@@ -189,13 +189,19 @@ end
 
 get '/gif/playback/*' do |url|
     url = buildUrl(url)
+    use_cache = false
+    cache = nil
+    cache_key = nil
     begin
-        cache = IronCache::Client.new.cache('playback_cache')
-        item = cache.get(Base64.urlsafe_encode64(url))
+        cache = IronCache::Client.new.cache('playback')
+        cache_key = Base64.urlsafe_encode64(url)
+        item = cache.get(cache_key)
         if item
-            list = Magick::ImageList.new.from_blob(Base64.urlsafe_decode64(item.value))
+            list = Magick::ImageList.new.from_blob(Base64.strict_decode64(item.value))
+            use_cache = true
         end
     rescue Exception => e
+        logger.warn "get"
         logger.warn e.to_s
     end
     begin
@@ -233,8 +239,11 @@ get '/gif/playback/*' do |url|
         halt 500, 'error'
     end
     begin
-        cache.put(Base64.urlsafe_encode64(url), Base64.urlsafe_encode64(list.to_blob))
+        unless use_cache
+            cache.put(cache_key, Base64.strict_encode64(list.to_blob))
+        end
     rescue Exception => e
+        logger.warn "put"
         logger.warn e.to_s
     end
 
