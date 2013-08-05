@@ -12,6 +12,15 @@ require 'mongo'
 use Rack::Deflater
 use Rack::StaticCache, :urls => ['/favicon.ico', '/robots.txt'], :root => 'public'
 
+def get_connection
+    return @db_connection if @db_connection
+    db = URI.parse(ENV['MONGOHQ_URL'])
+    db_name = db.path.gsub(/^\//, '')
+    @db_connection = Mongo::Connection.new(db.host, db.port).db(db_name)
+    @db_connection.authenticate(db.user, db.password) unless (db.user.nil? || db.user.nil?)
+    @db_connection
+end
+
 def buildUrl(url)
     unless /^http/ =~ url
         url = 'http://' + url
@@ -193,8 +202,7 @@ get '/gif/playback/*' do |url|
     list = nil
     use_cache = false
     begin
-        connection = Mongo::Connection.new('localhost')
-        db = connection.db('app17042342')
+        db = get_connection
         collection = db.collection('playback')
         collection.find('url' => url).each {|row|
             list = Magick::ImageList.new.from_blob(row['img'].to_s)
