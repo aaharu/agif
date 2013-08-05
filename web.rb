@@ -7,7 +7,7 @@ require 'net/http'
 require 'rack/contrib'
 require 'base64'
 require 'punycode'
-require 'iron_cache'
+require 'mongo'
 
 use Rack::Deflater
 use Rack::StaticCache, :urls => ['/favicon.ico', '/robots.txt'], :root => 'public'
@@ -189,19 +189,18 @@ end
 
 get '/gif/playback/*' do |url|
     url = buildUrl(url)
+    collection = nil
+    list = nil
     use_cache = false
-    cache = nil
-    cache_key = nil
     begin
-        cache = IronCache::Client.new.cache('playback')
-        cache_key = Base64.urlsafe_encode64(url)
-        item = cache.get(cache_key)
-        if item
-            list = Magick::ImageList.new.from_blob(Base64.strict_decode64(item.value))
+        connection = Mongo::Connection.new('localhost')
+        db = connection.db('app17042342')
+        collection = db.collection('playback')
+        collection.find('url' => url).each {|row|
+            list = Magick::ImageList.new.from_blob(row['img'].to_s)
             use_cache = true
-        end
+        }
     rescue Exception => e
-        logger.warn "get"
         logger.warn e.to_s
     end
     begin
@@ -240,10 +239,9 @@ get '/gif/playback/*' do |url|
     end
     begin
         unless use_cache
-            cache.put(cache_key, Base64.strict_encode64(list.to_blob))
+            collection.insert({'url' => url, 'img' => BSON::Binary.new(list.to_blob, BSON::Binary::SUBTYPE_BYTES)})
         end
     rescue Exception => e
-        logger.warn "put"
         logger.warn e.to_s
     end
 
