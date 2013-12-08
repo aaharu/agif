@@ -6,7 +6,7 @@ require 'uri'
 require 'net/http'
 require 'rack/contrib'
 require 'base64'
-require './submodule/komenuka/lib/komenuka/util'
+require './lib/agif'
 
 use Rack::Deflater
 use Rack::StaticCache, :urls => ['/favicon.ico', '/robots.txt'], :root => 'public'
