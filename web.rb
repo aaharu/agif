@@ -6,29 +6,10 @@ require 'uri'
 require 'net/http'
 require 'rack/contrib'
 require 'base64'
-require 'punycode'
+require './submodule/komenuka/lib/komenuka/util'
 
 use Rack::Deflater
 use Rack::StaticCache, :urls => ['/favicon.ico', '/robots.txt'], :root => 'public'
-
-def buildUrl(url)
-    unless /^http/ =~ url
-        url = 'http://' + url
-    else
-        unless url.index('://') then
-            url.sub!(':/', '://')
-        end
-    end
-    url.sub!(/:\/\/([^\/]+)/) {|match|
-        words = $1.split('.')
-        words.each_with_index {|word, i|
-            next if word =~ /[0-9a-z\-]/
-            words[i] = "xn--#{Punycode.encode(word)}"
-        }
-        "://#{words.join('.')}"
-    }
-    return url
-end
 
 get '/' do
     expires 3600, :private, :must_revalidate
@@ -41,7 +22,7 @@ get '/gif/frame' do
         halt 400, 'no url parameter'
     end
     begin
-        url = buildUrl(url)
+        url = Komenuka::Util.buildUrl(url)
         uri = URI.parse(url)
         res = Net::HTTP.start(uri.host, uri.port) {|http|
             http.get(uri.path)
@@ -72,7 +53,7 @@ end
 
 get '/gif/frame/simple/*' do |url|
     begin
-        url = buildUrl(url)
+        url = Komenuka::Util.buildUrl(url)
         uri = URI.parse(url)
         res = Net::HTTP.start(uri.host, uri.port) {|http|
             http.get(uri.path)
@@ -89,7 +70,7 @@ end
 
 get '/gif/frame/*' do |url|
     begin
-        url = buildUrl(url)
+        url = Komenuka::Util.buildUrl(url)
         uri = URI.parse(url)
         res = Net::HTTP.start(uri.host, uri.port) {|http|
             http.get(uri.path)
@@ -124,7 +105,7 @@ get '/gif/playback' do
         halt 400, 'no url parameter'
     end
     begin
-        url = buildUrl(url)
+        url = Komenuka::Util.buildUrl(url)
         uri = URI.parse(url)
         res = Net::HTTP.start(uri.host, uri.port) {|http|
             http.get(uri.path)
@@ -164,7 +145,7 @@ end
 
 get '/gif/playback/simple/*' do |url|
     begin
-        url = buildUrl(url)
+        url = Komenuka::Util.buildUrl(url)
         uri = URI.parse(url)
         res = Net::HTTP.start(uri.host, uri.port) {|http|
             http.get(uri.path)
@@ -187,20 +168,8 @@ get '/gif/playback/simple/*' do |url|
 end
 
 get '/gif/playback/*' do |url|
-    url = buildUrl(url)
-    collection = nil
+    url = Komenuka::Util.buildUrl(url)
     list = nil
-    use_cache = false
-    begin
-        db = get_connection
-        collection = db.collection('playback')
-        collection.find('url' => url).each {|row|
-            list = Magick::ImageList.new.from_blob(row['img'].to_s)
-            use_cache = true
-        }
-    rescue Exception => e
-        logger.warn e.to_s
-    end
     begin
         unless list
             uri = URI.parse(url)
@@ -229,18 +198,11 @@ get '/gif/playback/*' do |url|
                 list.push(frame)
             end
             list.optimize_layers(Magick::OptimizeLayer)
-            list.iterations = 65535
+            list.iterations = 0
         end
     rescue Exception => e
         logger.error e.to_s
         halt 500, 'error'
-    end
-    begin
-        unless use_cache
-            collection.insert({'url' => url, 'img' => BSON::Binary.new(list.to_blob, BSON::Binary::SUBTYPE_BYTES)})
-        end
-    rescue Exception => e
-        logger.warn e.to_s
     end
 
     expires 259200, :public

@@ -1,0 +1,3 @@
+[submodule "submodule/komenuka"]
+	path = submodule/komenuka
+	url = git@github.com:aaharu/komenuka.git
