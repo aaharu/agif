@@ -5,6 +5,7 @@ gem 'sinatra', '~> 1.4'
 gem 'rmagick', '~> 2.13', :require => 'RMagick'
 gem 'rack-contrib'
 gem 'punycode4r', '~> 0.2.0'
+gem 'oboe-heroku'
 
 group :development, :test do
     gem 'rake'

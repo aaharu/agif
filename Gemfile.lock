@@ -3,6 +3,9 @@ GEM
   specs:
     daemons (1.1.9)
     eventmachine (1.0.3)
+    oboe (2.3.4.1)
+    oboe-heroku (0.9.0.1)
+      oboe (>= 2.3.3.7)
     punycode4r (0.2.0)
     rack (1.5.2)
     rack-contrib (1.1.0)
@@ -25,6 +28,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  oboe-heroku
   punycode4r (~> 0.2.0)
   rack-contrib
   rake
