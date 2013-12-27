@@ -7,6 +7,7 @@ require 'net/http'
 require 'rack/contrib'
 require 'base64'
 require './lib/agif'
+require 'newrelic_rpm'
 
 use Rack::Deflater
 use Rack::StaticCache, :urls => ['/favicon.ico', '/robots.txt'], :root => 'public'
