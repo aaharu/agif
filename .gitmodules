@@ -1,0 +1,6 @@
+[submodule "submodule/gifken"]
+	path = submodule/gifken
+	url = https://github.com/aaharu/gifken.git
+[submodule "submodule/DefinitelyTyped"]
+	path = submodule/DefinitelyTyped
+	url = https://github.com/borisyankov/DefinitelyTyped.git

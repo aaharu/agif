@@ -1,0 +1,5 @@
+Rakefile
+/submodule/
+package.json
+Gruntfile.coffee
+src/

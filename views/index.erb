@@ -1,21 +1,22 @@
 <!DOCTYPE html>
-<html lang="ja" ng-app>
+<html>
     <head>
-        <meta charset="utf-8" />
+        <meta charset="utf-8">
         <title>agif</title>
-        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.2.1/pure-min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-        <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css">
+        <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon">
     </head>
     <body>
         <h1>agif</h1>
         <div>
-            <label>分割:</label>
-            <input type="text" ng-model="frame" placeholder="Enter a animated gif url" />
-            <a href="/gif/frame/{{frame}}">{{frame}}</a><br />
-            <label>逆再生:</label>
-            <input type="text" ng-model="playback" placeholder="Enter a animated gif url" />
-            <a href="/gif/playback/{{playback}}">{{playback}}</a>
+            <label>split</label>
+            <input type="text" placeholder="Enter a animated gif url" data-bind="value: splitUrl, valueUpdate: 'afterkeydown'">
+            <a data-bind="attr: { href: sUrl }, text: splitUrl"></a><br>
+            <label>reverse</label>
+            <input type="text" placeholder="Enter a animated gif url" data-bind="value: playbackUrl, valueUpdate: 'afterkeydown'">
+            <a data-bind="attr: { href: pUrl }, text: playbackUrl"></a><br>
         </div>
+        <script src="//ajax.aspnetcdn.com/ajax/knockout/knockout-3.0.0.js"></script>
+        <script src="/js/agif.min.js"></script>
     </body>
 </html>

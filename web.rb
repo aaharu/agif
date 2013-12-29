@@ -3,11 +3,13 @@
 require 'sinatra'
 require 'RMagick'
 require 'uri'
-require 'net/http'
+require 'net/https'
 require 'rack/contrib'
 require 'base64'
 require './lib/agif'
-require 'newrelic_rpm'
+configure :production do
+    require 'newrelic_rpm'
+end
 
 use Rack::Deflater
 use Rack::StaticCache, :urls => ['/favicon.ico', '/robots.txt'], :root => 'public'
@@ -25,9 +27,9 @@ get '/gif/frame' do
     begin
         url = Komenuka::Util.buildUrl(url)
         uri = URI.parse(url)
-        res = Net::HTTP.start(uri.host, uri.port) {|http|
-            http.get(uri.path)
-        }
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true if uri.scheme == 'https'
+        res = http.get(uri.path)
         image = Magick::Image.from_blob(res.body)
         over = nil
         over_list = Array.new
@@ -56,9 +58,9 @@ get '/gif/frame/simple/*' do |url|
     begin
         url = Komenuka::Util.buildUrl(url)
         uri = URI.parse(url)
-        res = Net::HTTP.start(uri.host, uri.port) {|http|
-            http.get(uri.path)
-        }
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true if uri.scheme == 'https'
+        res = http.get(uri.path)
         image = Magick::Image.from_blob(res.body)
     rescue Exception => e
         logger.error e.to_s
@@ -73,9 +75,9 @@ get '/gif/frame/*' do |url|
     begin
         url = Komenuka::Util.buildUrl(url)
         uri = URI.parse(url)
-        res = Net::HTTP.start(uri.host, uri.port) {|http|
-            http.get(uri.path)
-        }
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true if uri.scheme == 'https'
+        res = http.get(uri.path)
         image = Magick::Image.from_blob(res.body)
         over = nil
         over_list = Array.new
@@ -108,9 +110,9 @@ get '/gif/playback' do
     begin
         url = Komenuka::Util.buildUrl(url)
         uri = URI.parse(url)
-        res = Net::HTTP.start(uri.host, uri.port) {|http|
-            http.get(uri.path)
-        }
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true if uri.scheme == 'https'
+        res = http.get(uri.path)
         image = Magick::Image.from_blob(res.body)
         list = Magick::ImageList.new
         over = nil
@@ -148,9 +150,9 @@ get '/gif/playback/simple/*' do |url|
     begin
         url = Komenuka::Util.buildUrl(url)
         uri = URI.parse(url)
-        res = Net::HTTP.start(uri.host, uri.port) {|http|
-            http.get(uri.path)
-        }
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true if uri.scheme == 'https'
+        res = http.get(uri.path)
         image = Magick::Image.from_blob(res.body).reverse!
         list = Magick::ImageList.new
         image.each_with_index do |frame, index|
@@ -174,9 +176,9 @@ get '/gif/playback/*' do |url|
     begin
         unless list
             uri = URI.parse(url)
-            res = Net::HTTP.start(uri.host, uri.port) {|http|
-                http.get(uri.path)
-            }
+            http = Net::HTTP.new(uri.host, uri.port)
+            http.use_ssl = true if uri.scheme == 'https'
+            res = http.get(uri.path)
             image = Magick::Image.from_blob(res.body)
             list = Magick::ImageList.new
             over = nil

@@ -1,3 +1,5 @@
 .DS_Store
 .env
-iron.json
+tscommand.tmp.txt
+node_modules/
+src/ts/*.js
