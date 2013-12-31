@@ -1,0 +1,17 @@
+<meta charset="utf-8">
+<title>playback</title>
+<img id="img" src="/img/loading.gif">
+<script src="/js/gifken.min.js"></script>
+<script type="text/javascript">
+    window.onload = function () {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "//allow-any-origin.appspot.com/<%= image_url %>", true);
+        xhr.responseType = "arraybuffer";
+        xhr.onload = function (e) {
+            var arrayBuffer = e.target["response"],
+                gif = gifken.Gif.parse(arrayBuffer);
+            document.getElementById("img").src = URL.createObjectURL(gifken.Gif.writeToBlob(gif.playback(true)));
+        };
+        xhr.send();
+    };
+</script>

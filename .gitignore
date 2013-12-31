@@ -1,4 +1,6 @@
 .DS_Store
+.idea/
+*.iml
 .env
 tscommand.tmp.txt
 node_modules/

@@ -7,6 +7,10 @@ module.exports = (grunt) ->
             gifken:
                 src: "submodule/gifken/build/gifken.min.js"
                 dest: "public/js/gifken.min.js"
+        stylus:
+            compile:
+                files:
+                    "public/css/agif.css": "src/styl/agif.styl"
         uglify:
             options:
                 preserveComments: "some"
@@ -22,7 +26,8 @@ module.exports = (grunt) ->
                     sourceMap: false
 
     grunt.loadNpmTasks "grunt-contrib-copy"
+    grunt.loadNpmTasks "grunt-contrib-stylus"
     grunt.loadNpmTasks "grunt-contrib-uglify"
     grunt.loadNpmTasks "grunt-ts"
 
-    grunt.registerTask "default", ["copy", "ts", "uglify"]
+    grunt.registerTask "default", ["copy", "stylus", "ts", "uglify"]
