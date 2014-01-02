@@ -11,6 +11,16 @@
         "use strict";
 
         function init() {
+            if (typeof XMLHttpRequest === "undefined" ||
+                typeof URL === "undefined" || typeof URL.createObjectURL === "undefined" ||
+                typeof ArrayBuffer === "undefined" || typeof DataView === "undefined") {
+                var a = document.createElement("a");
+                a.setAttribute("href", "/gif/playback/<%= image_url %>");
+                a.textContent = "JavaScriptでの変換に未対応のブラウザのため、ImageMagickでの変換を試してください。";
+                document.body.innerHTML = "";
+                document.body.appendChild(a);
+                return;
+            }
             var img = document.getElementById("img");
             if (typeof Worker === "undefined") {
                 // disable web workers
