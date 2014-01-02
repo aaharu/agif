@@ -17,10 +17,10 @@ module.exports = (grunt) ->
             compile:
                 files:
                     "public/js/agif.min.js": ["src/ts/agif.js"]
+                    "public/js/task.min.js": ["src/ts/task.js"]
         ts:
             build:
-                src: ["src/ts/agif.ts"]
-                outDir: "src/ts/"
+                src: ["src/ts/agif.ts", "src/ts/task.ts"]
                 options:
                     removeComments: false
                     sourceMap: false

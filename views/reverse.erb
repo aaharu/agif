@@ -1,17 +1,37 @@
 <meta charset="utf-8">
-<title>playback</title>
+<title>reverse</title>
 <img id="img" src="/img/loading.gif">
+<dl>
+    <dt>元画像</dt><dd><a href="<%= image_url %>"><%= image_url %></a></dd>
+</dl>
 <script src="/js/gifken.min.js"></script>
 <script type="text/javascript">
-    window.onload = function () {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "//allow-any-origin.appspot.com/<%= image_url %>", true);
-        xhr.responseType = "arraybuffer";
-        xhr.onload = function (e) {
-            var arrayBuffer = e.target["response"],
-                gif = gifken.Gif.parse(arrayBuffer);
-            document.getElementById("img").src = URL.createObjectURL(gifken.Gif.writeToBlob(gif.playback(true)));
-        };
-        xhr.send();
-    };
+    (function() {
+        "use strict";
+
+        function init() {
+            var img = document.getElementById("img");
+            if (Worker) {
+                // enable web workers
+                var worker = new Worker("/js/task.min.js");
+                worker.onmessage = function(e) {
+                    img.src = e.data.src;
+                };
+                worker.postMessage({url: "<%= image_url %>", action: "reverse"});
+            } else {
+                // disable web workers
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", "//allow-any-origin.appspot.com/<%= image_url %>", true);
+                xhr.responseType = "arraybuffer";
+                xhr.onload = function (e) {
+                    var arrayBuffer = e.target["response"],
+                            gif = gifken.Gif.parse(arrayBuffer);
+                    img.src = URL.createObjectURL(gifken.Gif.writeToBlob(gif.playback(true)));
+                };
+                xhr.send();
+            }
+        }
+
+        window.addEventListener("load", init, false);
+    })();
 </script>

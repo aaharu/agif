@@ -3,7 +3,7 @@ GEM
   specs:
     daemons (1.1.9)
     eventmachine (1.0.3)
-    newrelic_rpm (3.7.1.180)
+    newrelic_rpm (3.7.1.182)
     punycode4r (0.2.0)
     rack (1.5.2)
     rack-contrib (1.1.0)
