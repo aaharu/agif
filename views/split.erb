@@ -4,6 +4,7 @@
 <dl>
     <dt>元画像</dt><dd><a href="<%= image_url %>"><%= image_url %></a></dd>
 </dl>
+<a href="/">top</a>
 <script src="/js/gifken.min.js"></script>
 <script type="text/javascript">
     (function() {
@@ -14,19 +15,7 @@
                 loading = new Image();
             loading.src = "/img/loading.gif";
             content.appendChild(loading);
-            if (Worker) {
-                // enable web workers
-                var worker = new Worker("/js/task.min.js");
-                worker.onmessage = function (e) {
-                    content.removeChild(loading);
-                    e.data.srcs.forEach(function (i) {
-                        var img = new Image();
-                        img.src = i;
-                        content.appendChild(img);
-                    });
-                };
-                worker.postMessage({url: "<%= image_url %>", action: "split"});
-            } else {
+            if (typeof Worker === "undefined") {
                 // disable web workers
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", "//allow-any-origin.appspot.com/<%= image_url %>", true);
@@ -37,13 +26,24 @@
                         gif = gifken.Gif.parse(arrayBuffer);
                     gif.split(true).forEach(function (i) {
                         var img = new Image(),
-                                blob = gifken.Gif.writeToBlob(i);
+                            blob = gifken.Gif.writeToBlob(i);
                         img.src = URL.createObjectURL(blob);
                         content.appendChild(img);
                     });
                 };
                 xhr.send();
+                return;
             }
+            var worker = new Worker("/js/task.min.js");
+            worker.onmessage = function (e) {
+                content.removeChild(loading);
+                e.data.srcs.forEach(function (i) {
+                    var img = new Image();
+                    img.src = i;
+                    content.appendChild(img);
+                });
+            };
+            worker.postMessage({url: "<%= image_url %>", action: "split"});
         }
 
         window.addEventListener("load", init, false);

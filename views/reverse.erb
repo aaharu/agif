@@ -4,6 +4,7 @@
 <dl>
     <dt>元画像</dt><dd><a href="<%= image_url %>"><%= image_url %></a></dd>
 </dl>
+<a href="/">top</a>
 <script src="/js/gifken.min.js"></script>
 <script type="text/javascript">
     (function() {
@@ -11,25 +12,24 @@
 
         function init() {
             var img = document.getElementById("img");
-            if (Worker) {
-                // enable web workers
-                var worker = new Worker("/js/task.min.js");
-                worker.onmessage = function(e) {
-                    img.src = e.data.src;
-                };
-                worker.postMessage({url: "<%= image_url %>", action: "reverse"});
-            } else {
+            if (typeof Worker === "undefined") {
                 // disable web workers
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", "//allow-any-origin.appspot.com/<%= image_url %>", true);
                 xhr.responseType = "arraybuffer";
                 xhr.onload = function (e) {
                     var arrayBuffer = e.target["response"],
-                            gif = gifken.Gif.parse(arrayBuffer);
+                        gif = gifken.Gif.parse(arrayBuffer);
                     img.src = URL.createObjectURL(gifken.Gif.writeToBlob(gif.playback(true)));
                 };
                 xhr.send();
+                return;
             }
+            var worker = new Worker("/js/task.min.js");
+            worker.onmessage = function (e) {
+                img.src = e.data.src;
+            };
+            worker.postMessage({url: "<%= image_url %>", action: "reverse"});
         }
 
         window.addEventListener("load", init, false);
