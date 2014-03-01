@@ -18,7 +18,7 @@ end
 
 get '/page/frame' do
     url = params['url']
-    unless url then
+    unless url
         halt 400, 'no url parameter'
     end
     over_list = nil
@@ -48,11 +48,11 @@ end
 
 get '/page/split' do
     url = params['url']
-    unless url then
+    unless url
         halt 400, 'no url parameter'
     end
     begin
-        url = Komenuka::Util.buildUrl(url)
+        url = Komenuka::Util.build_url(url)
     rescue Exception => e
         logger.error e.to_s
         halt 500, 'error'
@@ -64,7 +64,7 @@ end
 
 get '/page/split/*' do |url|
     begin
-        url = Komenuka::Util.buildUrl(url)
+        url = Komenuka::Util.build_url(url)
     rescue Exception => e
         logger.error e.to_s
         halt 500, 'error'
@@ -76,7 +76,7 @@ end
 
 get '/gif/playback' do
     url = params['url']
-    unless url then
+    unless url
         halt 400, 'no url parameter'
     end
     list = nil
@@ -108,11 +108,11 @@ end
 
 get '/page/reverse' do
     url = params['url']
-    unless url then
+    unless url
         halt 400, 'no url parameter'
     end
     begin
-        url = Komenuka::Util.buildUrl(url)
+        url = Komenuka::Util.build_url(url)
     rescue Exception => e
         logger.error e.to_s
         halt 500, 'error'
@@ -124,7 +124,7 @@ end
 
 get '/page/reverse/*' do |url|
     begin
-        url = Komenuka::Util.buildUrl(url)
+        url = Komenuka::Util.build_url(url)
     rescue Exception => e
         logger.error e.to_s
         halt 500, 'error'

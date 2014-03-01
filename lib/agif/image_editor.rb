@@ -6,7 +6,7 @@ require 'net/https'
 module Agif
     module ImageEditor
         def self.split(url)
-            url = Komenuka::Util.buildUrl(url)
+            url = Komenuka::Util.build_url(url)
             uri = URI.parse(url)
             http = Net::HTTP.new(uri.host, uri.port)
             http.use_ssl = true if uri.scheme == 'https'
@@ -18,10 +18,10 @@ module Agif
                 if index == 0
                     over = frame
                 else
-                    unless frame.background_color.to_s =~ /#[0-9A-F]{6,8}$/
-                        over = frame
-                    else
+                    if frame.background_color.to_s =~ /#[0-9A-F]{6,8}$/
                         over = over.composite(frame, frame.gravity, frame.page.x, frame.page.y, Magick::OverCompositeOp)
+                    else
+                        over = frame
                     end
                 end
                 over_list.push(over)
@@ -30,7 +30,7 @@ module Agif
         end
 
         def self.reverse(url)
-            url = Komenuka::Util.buildUrl(url)
+            url = Komenuka::Util.build_url(url)
             uri = URI.parse(url)
             http = Net::HTTP.new(uri.host, uri.port)
             http.use_ssl = true if uri.scheme == 'https'
@@ -43,11 +43,11 @@ module Agif
                 if index == 0
                     over = frame
                 else
-                    unless frame.background_color.to_s =~ /#[0-9A-F]{6,8}$/
-                        over = frame
-                    else
+                    if frame.background_color.to_s =~ /#[0-9A-F]{6,8}$/
                         over = over.composite(frame, frame.gravity, frame.page.x, frame.page.y, Magick::OverCompositeOp)
                         over.delay = frame.delay
+                    else
+                        over = frame
                     end
                 end
                 over_list.push(over)
