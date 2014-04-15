@@ -24,7 +24,7 @@ get '/page/frame' do
     over_list = nil
     begin
         over_list = Agif::ImageEditor.split(url)
-    rescue Exception => e
+    rescue => e
         logger.error e.to_s
         halt 500, 'error'
     end
@@ -37,7 +37,7 @@ get '/page/frame/*' do |url|
     over_list = nil
     begin
         over_list = Agif::ImageEditor.split(url)
-    rescue Exception => e
+    rescue => e
         logger.error e.to_s
         halt 500, 'error'
     end
@@ -53,7 +53,7 @@ get '/page/split' do
     end
     begin
         url = Komenuka::Util.build_url(url)
-    rescue Exception => e
+    rescue => e
         logger.error e.to_s
         halt 500, 'error'
     end
@@ -65,7 +65,7 @@ end
 get '/page/split/*' do |url|
     begin
         url = Komenuka::Util.build_url(url)
-    rescue Exception => e
+    rescue => e
         logger.error e.to_s
         halt 500, 'error'
     end
@@ -82,7 +82,7 @@ get '/gif/playback' do
     list = nil
     begin
         list = Agif::ImageEditor.reverse(url)
-    rescue Exception => e
+    rescue => e
         logger.error e.to_s
         halt 500, 'error'
     end
@@ -96,7 +96,7 @@ get '/gif/playback/*' do |url|
     list = nil
     begin
         list = Agif::ImageEditor.reverse(url)
-    rescue Exception => e
+    rescue => e
         logger.error e.to_s
         halt 500, 'error'
     end
@@ -113,7 +113,7 @@ get '/page/reverse' do
     end
     begin
         url = Komenuka::Util.build_url(url)
-    rescue Exception => e
+    rescue => e
         logger.error e.to_s
         halt 500, 'error'
     end
@@ -125,7 +125,7 @@ end
 get '/page/reverse/*' do |url|
     begin
         url = Komenuka::Util.build_url(url)
-    rescue Exception => e
+    rescue => e
         logger.error e.to_s
         halt 500, 'error'
     end
