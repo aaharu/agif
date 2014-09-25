@@ -3,5 +3,7 @@
 *.iml
 .env
 tscommand.tmp.txt
+.tscache/
 node_modules/
 src/ts/*.js
+wget-log
