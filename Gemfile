@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 ruby '2.2.0'
-gem 'thin', '~> 1.5'
+gem 'puma', '~> 2.11'
 gem 'sinatra', '~> 1.4'
 gem 'rmagick', '~> 2.13', :require => 'RMagick'
 gem 'rack-contrib'
