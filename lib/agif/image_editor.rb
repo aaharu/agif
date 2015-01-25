@@ -10,7 +10,7 @@ module Agif
             uri = URI.parse(url)
             http = Net::HTTP.new(uri.host, uri.port)
             http.use_ssl = true if uri.scheme == 'https'
-            res = http.get(uri.path)
+            res = http.get(uri.path.empty? ? '/' : uri.path)
             image = Magick::Image.from_blob(res.body)
             over = nil
             over_list = Array.new
@@ -34,7 +34,7 @@ module Agif
             uri = URI.parse(url)
             http = Net::HTTP.new(uri.host, uri.port)
             http.use_ssl = true if uri.scheme == 'https'
-            res = http.get(uri.path)
+            res = http.get(uri.path.empty? ? '/' : uri.path)
             image = Magick::Image.from_blob(res.body)
             list = Magick::ImageList.new
             over = nil
