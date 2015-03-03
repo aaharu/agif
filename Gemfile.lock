@@ -1,8 +1,8 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    newrelic_rpm (3.9.9.275)
-    puma (2.11.0)
+    newrelic_rpm (3.10.0.279)
+    puma (2.11.1)
       rack (>= 1.1, < 2.0)
     punycode4r (0.2.0)
     rack (1.6.0)
