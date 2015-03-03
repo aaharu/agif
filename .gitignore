@@ -7,3 +7,4 @@ tscommand.tmp.txt
 node_modules/
 src/ts/*.js
 wget-log
+typings/

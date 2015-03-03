@@ -1,4 +1,4 @@
-/// <reference path="../../submodule/DefinitelyTyped/knockout/knockout.d.ts" />
+/// <reference path="../../typings/tsd.d.ts" />
 
 (function() {
     function AppViewModel() {

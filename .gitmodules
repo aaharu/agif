@@ -2,6 +2,3 @@
 	path = submodule/gifken
 	url = https://github.com/aaharu/gifken.git
 	ignore = dirty
-[submodule "submodule/DefinitelyTyped"]
-	path = submodule/DefinitelyTyped
-	url = https://github.com/borisyankov/DefinitelyTyped.git
