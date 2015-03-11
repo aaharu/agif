@@ -3,3 +3,4 @@ Rakefile
 package.json
 Gruntfile.coffee
 src/
+tsd.json
