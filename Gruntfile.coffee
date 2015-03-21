@@ -3,10 +3,6 @@ module.exports = (grunt) ->
 
     grunt.initConfig
         pkg: pkg
-        copy:
-            gifken:
-                src: "submodule/gifken/build/gifken.min.js"
-                dest: "public/js/gifken.min.js"
         stylus:
             compile:
                 files:

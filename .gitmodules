@@ -1,4 +1,0 @@
-[submodule "submodule/gifken"]
-	path = submodule/gifken
-	url = https://github.com/aaharu/gifken.git
-	ignore = dirty
