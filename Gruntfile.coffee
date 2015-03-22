@@ -1,29 +1,28 @@
 module.exports = (grunt) ->
-    pkg = grunt.file.readJSON "package.json"
+    pkg = grunt.file.readJSON 'package.json'
 
     grunt.initConfig
         pkg: pkg
         stylus:
             compile:
                 files:
-                    "public/css/agif.css": "src/styl/agif.styl"
+                    'public/css/agif.css': 'src/styl/agif.styl'
         uglify:
             options:
-                preserveComments: "some"
+                preserveComments: 'some'
             compile:
                 files:
-                    "public/js/agif.min.js": ["src/ts/agif.js"]
-                    "public/js/task.min.js": ["src/ts/task.js"]
+                    'public/js/agif.min.js': ['src/ts/agif.js']
+                    'public/js/task.min.js': ['src/ts/task.js']
         ts:
             build:
-                src: ["src/ts/agif.ts", "src/ts/task.ts"]
+                src: ['src/ts/agif.ts', 'src/ts/task.ts']
                 options:
                     removeComments: false
                     sourceMap: false
 
-    grunt.loadNpmTasks "grunt-contrib-copy"
-    grunt.loadNpmTasks "grunt-contrib-stylus"
-    grunt.loadNpmTasks "grunt-contrib-uglify"
-    grunt.loadNpmTasks "grunt-ts"
+    grunt.loadNpmTasks 'grunt-contrib-stylus'
+    grunt.loadNpmTasks 'grunt-contrib-uglify'
+    grunt.loadNpmTasks 'grunt-ts'
 
-    grunt.registerTask "default", ["copy", "stylus", "ts", "uglify"]
+    grunt.registerTask 'default', ['stylus', 'ts', 'uglify']
