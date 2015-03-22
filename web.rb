@@ -16,23 +16,6 @@ get '/' do
     erb :index
 end
 
-get '/page/frame' do
-    url = params['url']
-    unless url
-        halt 400, 'no url parameter'
-    end
-    over_list = nil
-    begin
-        over_list = Agif::ImageEditor.split(url)
-    rescue => e
-        logger.error e.to_s
-        halt 500, 'error'
-    end
-
-    expires 259200, :public
-    erb :frame, :locals => {:images => over_list}
-end
-
 get '/page/frame/*' do |url|
     over_list = nil
     begin
@@ -47,19 +30,8 @@ get '/page/frame/*' do |url|
 end
 
 get '/page/split' do
-    url = params['url']
-    unless url
-        halt 400, 'no url parameter'
-    end
-    begin
-        url = Komenuka::Util.build_url(url)
-    rescue => e
-        logger.error e.to_s
-        halt 500, 'error'
-    end
-
     expires 259200, :public
-    erb :split, :locals => {:image_url => url}
+    erb :split
 end
 
 get '/page/split/*' do |url|
@@ -70,26 +42,7 @@ get '/page/split/*' do |url|
         halt 500, 'error'
     end
 
-    expires 259200, :public
-    erb :split, :locals => {:image_url => url}
-end
-
-get '/gif/playback' do
-    url = params['url']
-    unless url
-        halt 400, 'no url parameter'
-    end
-    list = nil
-    begin
-        list = Agif::ImageEditor.reverse(url)
-    rescue => e
-        logger.error e.to_s
-        halt 500, 'error'
-    end
-
-    expires 259200, :public
-    content_type :gif
-    list.to_blob
+    redirect to('/page/split#' + url)
 end
 
 get '/gif/playback/*' do |url|
@@ -107,19 +60,8 @@ get '/gif/playback/*' do |url|
 end
 
 get '/page/reverse' do
-    url = params['url']
-    unless url
-        halt 400, 'no url parameter'
-    end
-    begin
-        url = Komenuka::Util.build_url(url)
-    rescue => e
-        logger.error e.to_s
-        halt 500, 'error'
-    end
-
     expires 259200, :public
-    erb :reverse, :locals => {:image_url => url}
+    erb :reverse
 end
 
 get '/page/reverse/*' do |url|
@@ -130,6 +72,5 @@ get '/page/reverse/*' do |url|
         halt 500, 'error'
     end
 
-    expires 259200, :public
-    erb :reverse, :locals => {:image_url => url}
+    redirect to('/page/reverse#' + url)
 end

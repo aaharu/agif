@@ -14,10 +14,13 @@ module.exports = (grunt) ->
                 files:
                     'public/js/agif.min.js': ['src/ts/agif.js']
                     'public/js/task.min.js': ['src/ts/task.js']
+                    'public/js/split.min.js': ['src/ts/split.js']
+                    'public/js/reverse.min.js': ['src/ts/reverse.js']
         ts:
             build:
-                src: ['src/ts/agif.ts', 'src/ts/task.ts']
+                src: ['src/ts/*.ts']
                 options:
+                    failOnTypeErrors: false
                     removeComments: false
                     sourceMap: false
 

@@ -1,61 +1,6 @@
 <meta charset="utf-8">
 <title>split</title>
-<div id="content"></div>
-<dl>
-    <dt>元画像</dt><dd><a href="<%= image_url %>"><%= image_url %></a></dd>
-</dl>
+<div id="content"><img src="/img/loading.gif"></div>
 <a href="/">top</a>
-<script src="/js/gifken.min.js"></script>
-<script type="text/javascript">
-    (function() {
-        "use strict";
-
-        function init() {
-            if (typeof XMLHttpRequest === "undefined" ||
-                typeof URL === "undefined" || typeof URL.createObjectURL === "undefined" ||
-                typeof ArrayBuffer === "undefined" || typeof DataView === "undefined") {
-                var a = document.createElement("a");
-                a.setAttribute("href", "/page/frame/<%= image_url %>");
-                a.textContent = "JavaScriptでの変換に未対応のブラウザのため、ImageMagickでの変換を試してください。";
-                document.body.innerHTML = "";
-                document.body.appendChild(a);
-                return;
-            }
-            var content = document.getElementById("content"),
-                loading = new Image();
-            loading.src = "/img/loading.gif";
-            content.appendChild(loading);
-            if (typeof Worker === "undefined") {
-                // disable web workers
-                var xhr = new XMLHttpRequest();
-                xhr.open("GET", "//allow-any-origin.appspot.com/<%= image_url %>", true);
-                xhr.responseType = "arraybuffer";
-                xhr.onload = function (e) {
-                    content.removeChild(loading);
-                    var arrayBuffer = e.target["response"],
-                        gif = gifken.Gif.parse(arrayBuffer);
-                    gif.split(true).forEach(function (i) {
-                        var img = new Image(),
-                            blob = gifken.Gif.writeToBlob(i);
-                        img.src = URL.createObjectURL(blob);
-                        content.appendChild(img);
-                    });
-                };
-                xhr.send();
-                return;
-            }
-            var worker = new Worker("/js/task.min.js");
-            worker.onmessage = function (e) {
-                content.removeChild(loading);
-                e.data.srcs.forEach(function (i) {
-                    var img = new Image();
-                    img.src = i;
-                    content.appendChild(img);
-                });
-            };
-            worker.postMessage({url: "<%= image_url %>", action: "split"});
-        }
-
-        window.addEventListener("load", init, false);
-    })();
-</script>
+<script type="text/javascript" src="/js/gifken-client.min.js"></script>
+<script type="text/javascript" src="/js/split.min.js"></script>

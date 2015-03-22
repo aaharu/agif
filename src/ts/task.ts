@@ -1,31 +1,20 @@
-/// <reference path="../../submodule/gifken/src/gifken.ts" />
+/// <reference path="../../gifken/src/gifken.ts" />
 
-(function() {
-    "use strict";
+"use strict";
 
-    onmessage = (evt) => {
-        var message = {},
-            xhr = new XMLHttpRequest();
-        importScripts("/js/gifken.min.js");
-        xhr.open("GET", "//allow-any-origin.appspot.com/" + evt.data.url, true);
-        xhr.responseType = "arraybuffer";
-        if (evt.data.action === "reverse") {
-            xhr.onload = (e) => {
-                var gif = gifken.Gif.parse(e.target["response"]);
-                message["src"] = URL.createObjectURL(gifken.Gif.writeToBlob(gif.playback(true)));
-                this.postMessage(message);
-            };
-        } else if (evt.data.action === "split") {
-            xhr.onload = (e) => {
-                var gif = gifken.Gif.parse(e.target["response"]);
-                message["srcs"] = [];
-                gif.split(true).forEach((i) => {
-                    var blob = gifken.Gif.writeToBlob(i);
-                    message["srcs"].push(URL.createObjectURL(blob));
-                });
-                this.postMessage(message);
-            };
-        }
-        xhr.send();
-    };
-})();
+var window = self;
+onmessage = (evt) => {
+    var message = {};
+    importScripts("/js/gifken-client.min.js");
+    var gif = gifken.Gif.parse(evt.data.buffer);
+    if (evt.data.action === "reverse") {
+        message["src"] = URL.createObjectURL(gifken.GifPresenter.writeToBlob(gif.playback(true).writeToArrayBuffer()));
+    } else if (evt.data.action === "split") {
+        message["src_list"] = [];
+        gif.split(true).forEach((i) => {
+            var blob = gifken.GifPresenter.writeToBlob(i.writeToArrayBuffer());
+            message["src_list"].push(URL.createObjectURL(blob));
+        });
+    }
+    postMessage(message);
+};

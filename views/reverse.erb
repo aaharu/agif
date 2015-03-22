@@ -1,47 +1,6 @@
 <meta charset="utf-8">
 <title>reverse</title>
 <img id="img" src="/img/loading.gif">
-<dl>
-    <dt>元画像</dt><dd><a href="<%= image_url %>"><%= image_url %></a></dd>
-</dl>
 <a href="/">top</a>
-<script src="/js/gifken.min.js"></script>
-<script type="text/javascript">
-    (function() {
-        "use strict";
-
-        function init() {
-            if (typeof XMLHttpRequest === "undefined" ||
-                typeof URL === "undefined" || typeof URL.createObjectURL === "undefined" ||
-                typeof ArrayBuffer === "undefined" || typeof DataView === "undefined") {
-                var a = document.createElement("a");
-                a.setAttribute("href", "/gif/playback/<%= image_url %>");
-                a.textContent = "JavaScriptでの変換に未対応のブラウザのため、ImageMagickでの変換を試してください。";
-                document.body.innerHTML = "";
-                document.body.appendChild(a);
-                return;
-            }
-            var img = document.getElementById("img");
-            if (typeof Worker === "undefined") {
-                // disable web workers
-                var xhr = new XMLHttpRequest();
-                xhr.open("GET", "//allow-any-origin.appspot.com/<%= image_url %>", true);
-                xhr.responseType = "arraybuffer";
-                xhr.onload = function (e) {
-                    var arrayBuffer = e.target["response"],
-                        gif = gifken.Gif.parse(arrayBuffer);
-                    img.src = URL.createObjectURL(gifken.Gif.writeToBlob(gif.playback(true)));
-                };
-                xhr.send();
-                return;
-            }
-            var worker = new Worker("/js/task.min.js");
-            worker.onmessage = function (e) {
-                img.src = e.data.src;
-            };
-            worker.postMessage({url: "<%= image_url %>", action: "reverse"});
-        }
-
-        window.addEventListener("load", init, false);
-    })();
-</script>
+<script type="text/javascript" src="/js/gifken-client.min.js"></script>
+<script type="text/javascript" src="/js/reverse.min.js"></script>

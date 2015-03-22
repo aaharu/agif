@@ -14,7 +14,7 @@
             }
             this.split("split by JavaScript<br><span>HTML</span>");
             this.showBlocks(true);
-            return "/page/split/" + this.url();
+            return "/page/split#" + this.url();
         }, this);
         this.frameUrl = ko.computed(function() {
             if (!this.url()) {
@@ -30,7 +30,7 @@
             }
             this.reverse("reverse by JavaScript<br><span>HTML</span>");
             this.showBlocks(true);
-            return "/page/reverse/" + this.url();
+            return "/page/reverse#" + this.url();
         }, this);
         this.playbackUrl = ko.computed(function() {
             if (!this.url()) {
