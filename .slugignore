@@ -1,5 +1,5 @@
 Rakefile
-/submodule/
+/gifken/
 package.json
 Gruntfile.coffee
 src/
