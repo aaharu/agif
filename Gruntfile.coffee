@@ -23,6 +23,7 @@ module.exports = (grunt) ->
                     failOnTypeErrors: false
                     removeComments: false
                     sourceMap: false
+                    module: 'commonjs'
 
     grunt.loadNpmTasks 'grunt-contrib-stylus'
     grunt.loadNpmTasks 'grunt-contrib-uglify'
