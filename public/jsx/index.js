@@ -1,5 +1,4 @@
-
-'use strict';
+"use strict";
 
 var AgifPanels = React.createClass({
   render: function () {

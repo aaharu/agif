@@ -26,7 +26,7 @@ module.exports = (grunt) ->
         bower:
           install:
             options:
-              targetDir: 'public'
+              targetDir: 'public/js'
         copy:
           main:
             files: [
