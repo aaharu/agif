@@ -9,3 +9,4 @@ src/ts/*.js
 wget-log
 typings/
 bower_components/
+src/jsx/*.js

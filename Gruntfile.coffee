@@ -15,6 +15,7 @@ module.exports = (grunt) ->
                     'public/js/task.min.js': ['src/ts/task.js']
                     'public/js/split.min.js': ['src/ts/split.js']
                     'public/js/reverse.min.js': ['src/ts/reverse.js']
+                    'public/jsx/index.min.js': ['src/jsx/index.js']
         ts:
             build:
                 src: ['src/ts/*.ts']
@@ -27,21 +28,17 @@ module.exports = (grunt) ->
           install:
             options:
               targetDir: 'public/js'
-        copy:
-          main:
-            files: [
-              expand: true
-              cwd: 'src/'
-              src: ['jsx/*']
-              dest: 'public/'
-              filter: 'isFile'
-            ]
+        react:
+          files:
+            expand: true
+            src: ['src/jsx/*.jsx']
+            ext: '.js'
 
     grunt.loadNpmTasks 'grunt-contrib-stylus'
     grunt.loadNpmTasks 'grunt-contrib-uglify'
     grunt.loadNpmTasks 'grunt-ts'
     grunt.loadNpmTasks 'grunt-bower-task'
-    grunt.loadNpmTasks 'grunt-contrib-copy'
+    grunt.loadNpmTasks 'grunt-react'
 
     grunt.registerTask 'init', ['bower:install', 'default']
-    grunt.registerTask 'default', ['copy:main', 'stylus:compile', 'ts:build', 'uglify']
+    grunt.registerTask 'default', ['react:files', 'stylus:compile', 'ts:build', 'uglify']
