@@ -12,7 +12,6 @@ module.exports = (grunt) ->
                 preserveComments: 'some'
             compile:
                 files:
-                    'public/js/agif.min.js': ['src/ts/agif.js']
                     'public/js/task.min.js': ['src/ts/task.js']
                     'public/js/split.min.js': ['src/ts/split.js']
                     'public/js/reverse.min.js': ['src/ts/reverse.js']
@@ -24,9 +23,25 @@ module.exports = (grunt) ->
                     removeComments: false
                     sourceMap: false
                     module: 'commonjs'
+        bower:
+          install:
+            options:
+              targetDir: 'public'
+        copy:
+          main:
+            files: [
+              expand: true
+              cwd: 'src/'
+              src: ['jsx/*']
+              dest: 'public/'
+              filter: 'isFile'
+            ]
 
     grunt.loadNpmTasks 'grunt-contrib-stylus'
     grunt.loadNpmTasks 'grunt-contrib-uglify'
     grunt.loadNpmTasks 'grunt-ts'
+    grunt.loadNpmTasks 'grunt-bower-task'
+    grunt.loadNpmTasks 'grunt-contrib-copy'
 
-    grunt.registerTask 'default', ['stylus', 'ts', 'uglify']
+    grunt.registerTask 'init', ['bower:install', 'default']
+    grunt.registerTask 'default', ['copy:main', 'stylus:compile', 'ts:build', 'uglify']
