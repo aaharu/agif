@@ -4,3 +4,5 @@ package.json
 Gruntfile.coffee
 src/
 tsd.json
+bower.json
+README.md
