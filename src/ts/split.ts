@@ -1,5 +1,3 @@
-/// <reference path="../../gifken/src/gifken.ts" />
-
 (function() {
     "use strict";
 
@@ -53,13 +51,13 @@
                 worker.postMessage({buffer: arrayBuffer, action: "split"});
             } else {
                 // disable web workers
-                var gif = gifken.Gif.parse(arrayBuffer);
+                var gif = (<any>window).gifken.Gif.parse(arrayBuffer);
                 while (content.firstChild) {
                     content.removeChild(content.firstChild);
                 }
                 gif.split(true).forEach(function (i) {
                     var img = new Image(),
-                        blob = gifken.GifPresenter.writeToBlob(i.writeToArrayBuffer());
+                        blob = (<any>window).gifken.GifPresenter.writeToBlob(i.writeToArrayBuffer());
                     img.src = URL.createObjectURL(blob);
                     content.appendChild(img);
                 });

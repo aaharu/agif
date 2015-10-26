@@ -1,5 +1,3 @@
-/// <reference path="../../gifken/src/gifken.ts" />
-
 (function() {
     "use strict";
 
@@ -46,8 +44,8 @@
                 worker.postMessage({buffer: arrayBuffer, action: "reverse"});
             } else {
                 // disable web workers
-                var gif = gifken.Gif.parse(arrayBuffer);
-                img.src = URL.createObjectURL(gifken.GifPresenter.writeToBlob(gif.playback(true).writeToArrayBuffer()));
+                var gif = (<any>window).gifken.Gif.parse(arrayBuffer);
+                img.src = URL.createObjectURL((<any>window).gifken.GifPresenter.writeToBlob(gif.playback(true).writeToArrayBuffer()));
             }
         };
         xhr.send();

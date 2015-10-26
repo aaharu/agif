@@ -16,13 +16,13 @@ module.exports = (grunt) ->
                     'public/js/split.min.js': ['src/ts/split.js']
                     'public/js/reverse.min.js': ['src/ts/reverse.js']
                     'public/jsx/index.min.js': ['src/jsx/index.js']
-        ts:
+        typescript:
             build:
                 src: ['src/ts/*.ts']
                 options:
+                    target: 'es5'
                     failOnTypeErrors: false
                     removeComments: false
-                    sourceMap: false
                     module: 'commonjs'
         bower:
           install:
@@ -36,9 +36,9 @@ module.exports = (grunt) ->
 
     grunt.loadNpmTasks 'grunt-contrib-stylus'
     grunt.loadNpmTasks 'grunt-contrib-uglify'
-    grunt.loadNpmTasks 'grunt-ts'
+    grunt.loadNpmTasks 'grunt-typescript'
     grunt.loadNpmTasks 'grunt-bower-task'
     grunt.loadNpmTasks 'grunt-react'
 
     grunt.registerTask 'init', ['bower:install', 'default']
-    grunt.registerTask 'default', ['react:files', 'stylus:compile', 'ts:build', 'uglify']
+    grunt.registerTask 'default', ['react:files', 'stylus:compile', 'typescript:build', 'uglify']
