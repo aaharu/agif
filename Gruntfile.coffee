@@ -12,13 +12,15 @@ module.exports = (grunt) ->
                 preserveComments: 'some'
             compile:
                 files:
-                    'public/js/task.min.js': ['src/ts/task.js']
-                    'public/js/split.min.js': ['src/ts/split.js']
-                    'public/js/reverse.min.js': ['src/ts/reverse.js']
-                    'public/jsx/index.min.js': ['src/jsx/index.js']
+                    'public/js/task.min.js': ['tmp/task.js']
+                    'public/js/split.min.js': ['tmp/split.js']
+                    'public/js/reverse.min.js': ['tmp/reverse.js']
+                    'public/jsx/index.min.js': ['tmp/src/jsx/index.js']
+                    'public/js/gifken-client.min.js': ['gifken/build/gifken-client.js']
         typescript:
             build:
                 src: ['src/ts/*.ts']
+                dest: 'tmp'
                 options:
                     target: 'es5'
                     failOnTypeErrors: false
@@ -33,12 +35,15 @@ module.exports = (grunt) ->
             expand: true
             src: ['src/jsx/*.jsx']
             ext: '.js'
+            dest: 'tmp'
+        clean: ['tmp/']
 
     grunt.loadNpmTasks 'grunt-contrib-stylus'
     grunt.loadNpmTasks 'grunt-contrib-uglify'
     grunt.loadNpmTasks 'grunt-typescript'
     grunt.loadNpmTasks 'grunt-bower-task'
     grunt.loadNpmTasks 'grunt-react'
+    grunt.loadNpmTasks 'grunt-contrib-clean'
 
     grunt.registerTask 'init', ['bower:install', 'default']
-    grunt.registerTask 'default', ['react:files', 'stylus:compile', 'typescript:build', 'uglify']
+    grunt.registerTask 'default', ['clean', 'react:files', 'stylus:compile', 'typescript:build', 'uglify']
