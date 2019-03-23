@@ -6,3 +6,5 @@ src/
 tsd.json
 bower.json
 README.md
+.editorconfig
+/bin/

@@ -10,3 +10,5 @@ wget-log
 typings/
 bower_components/
 tmp/
+agif
+/bin/

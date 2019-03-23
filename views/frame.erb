@@ -1,7 +1,0 @@
-<meta charset="utf-8">
-<title>frame</title>
-<div id="list">
-<% images.each do |item| %>
-<img src="data:image/gif;base64,<%= Base64.encode64(item.to_blob) %>">
-<% end %>
-</div>
