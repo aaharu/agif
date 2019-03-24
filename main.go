@@ -15,7 +15,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	_ "github.com/heroku/x/hmetrics/onload"
+	"github.com/go-chi/cors"
 	// brotli_enc "gopkg.in/kothar/brotli-go.v0/enc"
 )
 
@@ -35,10 +35,18 @@ func main() {
 	// 	return brotli_enc.NewBrotliWriter(params, w)
 	// })
 	// r.Use(compressor.Handler())
+	cors := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{"GET", "HEAD", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: true,
+	})
+	r.Use(cors.Handler)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
-		tmpl := template.Must(template.ParseFiles("./public/index.html"))
+		tmpl := template.Must(template.ParseFiles("./public/dist/index.html"))
 		if err := tmpl.ExecuteTemplate(w, "index.html", nil); err != nil {
 			log.Printf("cannot compile template: %s\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -49,7 +57,7 @@ func main() {
 
 	r.Get("/page/split", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
-		tmpl := template.Must(template.ParseFiles("./public/split.html"))
+		tmpl := template.Must(template.ParseFiles("./public/dist/split.html"))
 		if err := tmpl.ExecuteTemplate(w, "split.html", nil); err != nil {
 			log.Printf("cannot compile template: %s\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -64,7 +72,7 @@ func main() {
 
 	r.Get("/page/reverse", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
-		tmpl := template.Must(template.ParseFiles("./public/reverse.html"))
+		tmpl := template.Must(template.ParseFiles("./public/dist/reverse.html"))
 		if err := tmpl.ExecuteTemplate(w, "reverse.html", nil); err != nil {
 			log.Printf("cannot compile template: %s\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -112,7 +120,7 @@ func main() {
 			}
 			images = append(images, base64.StdEncoding.EncodeToString(buf.Bytes()))
 		}
-		tmpl := template.Must(template.ParseFiles("./public/frame.html"))
+		tmpl := template.Must(template.ParseFiles("./public/dist/frame.html"))
 		if err := tmpl.ExecuteTemplate(w, "frame.html", images); err != nil {
 			log.Printf("cannot compile template: %s\n", err)
 			w.WriteHeader(http.StatusInternalServerError)

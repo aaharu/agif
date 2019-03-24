@@ -9,4 +9,4 @@ tmp/
 agif
 /bin/
 .cache/
-/public/
+/public/dist/
