@@ -1,16 +1,17 @@
+import Gif from "../../node_modules/gifken/build/src/Gif";
+import GifPresenter from "../../node_modules/gifken/build/src/GifPresenter";
+
 "use strict";
 
-var window = self;
-onmessage = (evt) => {
+onmessage = evt => {
     var message = {};
-    importScripts("/js/gifken-client.min.js");
-    var gif = (<any>self).gifken.Gif.parse(evt.data.buffer);
+    var gif = Gif.parse(evt.data.buffer);
     if (evt.data.action === "reverse") {
-        message["src"] = URL.createObjectURL((<any>self).gifken.GifPresenter.writeToBlob(gif.playback(true).writeToArrayBuffer()));
+        message["src"] = URL.createObjectURL(GifPresenter.writeToBlob(gif.playback(true).writeToArrayBuffer()));
     } else if (evt.data.action === "split") {
         message["src_list"] = [];
-        gif.split(true).forEach((i) => {
-            var blob = (<any>self).gifken.GifPresenter.writeToBlob(i.writeToArrayBuffer());
+        gif.split(true).forEach(i => {
+            var blob = GifPresenter.writeToBlob(i.writeToArrayBuffer());
             message["src_list"].push(URL.createObjectURL(blob));
         });
     }
