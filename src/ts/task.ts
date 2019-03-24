@@ -1,10 +1,10 @@
-import Gif from "../../node_modules/gifken/build/src/Gif";
-import GifPresenter from "../../node_modules/gifken/build/src/GifPresenter";
+import { Gif } from "../../node_modules/gifken/build/src/Gif";
+import { GifPresenter } from "../../node_modules/gifken/build/src/GifPresenter";
 
 "use strict";
 
 onmessage = evt => {
-    var message = {};
+    var message: any = {};
     var gif = Gif.parse(evt.data.buffer);
     if (evt.data.action === "reverse") {
         message["src"] = URL.createObjectURL(GifPresenter.writeToBlob(gif.playback(true).writeToArrayBuffer()));

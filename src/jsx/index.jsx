@@ -10,11 +10,11 @@ var AgifPanels = React.createClass({
         <div className="pure-u-1-4 bg-split">
           <a target="_blank" href={"/page/split#" + this.props.url}>split by JavaScript<br /><small>HTML</small></a>
         </div><div className="pure-u-1-4 bg-frame">
-          <a target="_blank" href={"/page/frame/" + this.props.url}>split by ImageMagick<br /><small>HTML</small></a>
+          <a target="_blank" href={"/page/frame/" + this.props.url}>split<br /><small>HTML</small></a>
         </div><div className="pure-u-1-4 bg-reverse">
           <a target="_blank" href={"/page/reverse#" + this.props.url}>reverse by JavaScript<br /><small>HTML</small></a>
         </div><div className="pure-u-1-4 bg-playback">
-          <a target="_blank" href={"/gif/playback/" + this.props.url}>playback by ImageMagick<br /><small>GIF</small></a>
+          <a target="_blank" href={"/gif/playback/" + this.props.url}>playback<br /><small>GIF</small></a>
         </div>
       </div>
     );
