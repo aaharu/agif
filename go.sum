@@ -1,6 +1,6 @@
 github.com/go-chi/chi v4.0.2+incompatible h1:maB6vn6FqCxrpz4FqWdh4+lwpyZIQS7YEAUcHlgXVRs=
 github.com/go-chi/chi v4.0.2+incompatible/go.mod h1:eB3wogJHnLi3x/kFX2A+IbTBlXxmMeXJVKy9tTv1XzQ=
-github.com/heroku/x v0.0.0-20181102215100-85e5aa5e6aa1 h1:I8YR/oRdhG/wb78Z5MBbeWkLPuhEZd/uKXub8LMyBGk=
-github.com/heroku/x v0.0.0-20181102215100-85e5aa5e6aa1/go.mod h1:opmAyjmIGn9/Y+9Nia6eIaktIXIoMhhFXEFbHLMsX3Y=
+github.com/go-chi/cors v1.0.0 h1:e6x8k7uWbUwYs+aXDoiUzeQFT6l0cygBYyNhD7/1Tg0=
+github.com/go-chi/cors v1.0.0/go.mod h1:K2Yje0VW/SJzxiyMYu6iPQYa7hMjQX2i/F491VChg1I=
 gopkg.in/kothar/brotli-go.v0 v0.0.0-20170728081549-771231d473d6 h1:M8GdJL0oESXVmjOOT3upJyFkKs5o1jJERiKYOZjVes0=
 gopkg.in/kothar/brotli-go.v0 v0.0.0-20170728081549-771231d473d6/go.mod h1:nVee4zUY+UoXjOfM57w44w2XjsoIqIKd4A9vktFSQ6I=
