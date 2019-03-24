@@ -14,7 +14,7 @@ script:
 deploy:
   provider: heroku
   api_key:
-    secure: CWf6swnMjPZv+k+KBbrLQX7djEtc6Xugay3zWFhkbPD0oqddW7VWAmng7l5qvmeComOsZxOA02S8N80EBvd5Zu2oCEzj1mb03MNZ/355YjTgexbUt2oGq+ZHwFfdYCgv33kNhKVnV5oPf1ZrY1AWOKzIU1dS7cKaMa9jQlzb/wk=
+    secure: ${APIKEY}
   app: agif
   on:
     repo: aaharu/agif

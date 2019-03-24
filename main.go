@@ -38,7 +38,7 @@ func main() {
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
-		tmpl := template.Must(template.ParseFiles("./views/index.html"))
+		tmpl := template.Must(template.ParseFiles("./public/index.html"))
 		if err := tmpl.ExecuteTemplate(w, "index.html", nil); err != nil {
 			log.Printf("cannot compile template: %s\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -49,7 +49,7 @@ func main() {
 
 	r.Get("/page/split", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
-		tmpl := template.Must(template.ParseFiles("./views/split.html"))
+		tmpl := template.Must(template.ParseFiles("./public/split.html"))
 		if err := tmpl.ExecuteTemplate(w, "split.html", nil); err != nil {
 			log.Printf("cannot compile template: %s\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -64,7 +64,7 @@ func main() {
 
 	r.Get("/page/reverse", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
-		tmpl := template.Must(template.ParseFiles("./views/reverse.html"))
+		tmpl := template.Must(template.ParseFiles("./public/reverse.html"))
 		if err := tmpl.ExecuteTemplate(w, "reverse.html", nil); err != nil {
 			log.Printf("cannot compile template: %s\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -112,7 +112,7 @@ func main() {
 			}
 			images = append(images, base64.StdEncoding.EncodeToString(buf.Bytes()))
 		}
-		tmpl := template.Must(template.ParseFiles("./views/frame.html"))
+		tmpl := template.Must(template.ParseFiles("./public/frame.html"))
 		if err := tmpl.ExecuteTemplate(w, "frame.html", images); err != nil {
 			log.Printf("cannot compile template: %s\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
