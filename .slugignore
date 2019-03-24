@@ -1,10 +1,7 @@
-Rakefile
-/gifken/
 package.json
-Gruntfile.coffee
 src/
-tsd.json
-bower.json
 README.md
 .editorconfig
 /bin/
+.cache/
+node_modules/

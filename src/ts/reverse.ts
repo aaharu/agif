@@ -37,7 +37,7 @@
 
             if (Worker) {
                 // enable web workers
-                var worker = new Worker("/js/task.min.js?1");
+                var worker = new Worker("./task.ts");
                 worker.onmessage = (e) => {
                     img.src = e.data.src;
                 };

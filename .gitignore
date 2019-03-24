@@ -3,12 +3,10 @@
 .vscode/
 *.iml
 .env
-tscommand.tmp.txt
-.tscache/
 node_modules/
 wget-log
-typings/
-bower_components/
 tmp/
 agif
 /bin/
+.cache/
+/public/
