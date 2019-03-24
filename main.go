@@ -47,6 +47,10 @@ func main() {
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
+		if r.Header.Get("X-Forwarded-Proto") == "http" {
+			http.Redirect(w, r, "https://agif.herokuapp.com/", http.StatusMovedPermanently)
+			return
+		}
 		tmpl := template.Must(template.ParseFiles("./public/dist/index.html"))
 		if err := tmpl.ExecuteTemplate(w, "index.html", nil); err != nil {
 			log.Printf("cannot compile template: %s\n", err)
