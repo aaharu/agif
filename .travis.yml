@@ -5,6 +5,9 @@ env:
   global:
     - GO111MODULE=on
 go_import_path: github.com/aaharu/agif
+before_script:
+  - npm i -g npm
+  - npm ci
 script:
   - go test -v ./...
   - npm run build
