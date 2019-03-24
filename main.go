@@ -43,6 +43,7 @@ func main() {
 		AllowCredentials: true,
 	})
 	r.Use(cors.Handler)
+	r.Use(hsts)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
@@ -202,4 +203,15 @@ func fileServer(r chi.Router, path string, root http.FileSystem) {
 	r.Get(path, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fs.ServeHTTP(w, r)
 	}))
+}
+
+func hsts(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		originalProtcol := r.Header.Get("X-Forwarded-Proto")
+		if originalProtcol == "https" {
+			w.Header().Set("Strict-Transport-Security", "max-age=63072000; preload")
+		}
+		next.ServeHTTP(w, r)
+	}
+	return http.HandlerFunc(fn)
 }
