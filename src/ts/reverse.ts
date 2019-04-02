@@ -1,7 +1,4 @@
-import { Gif } from "gifken";
-import { GifPresenter } from "gifken/build/src/GifPresenter";
-
-"use strict";
+import { Gif, GifPresenter } from "gifken";
 
 const onReverseLoad = () => {
     const img = <HTMLImageElement>document.getElementById("img"),
