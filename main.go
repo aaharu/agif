@@ -107,17 +107,28 @@ func main() {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		images := make([]string, 0, len(target.Image))
-		for _, frame := range target.Image {
-			image := &gif.GIF{
-				Image:           []*image.Paletted{frame},
+		frameCount := len(target.Image)
+		frames := make([]*image.Paletted, 0, frameCount)
+		images := make([]string, 0, frameCount)
+		for frameIndex, frame := range target.Image {
+			frames = append(frames, frame)
+			rect := image.Rect(0, 0, target.Config.Width, target.Config.Height)
+			out := image.NewPaletted(rect, frame.Palette)
+			if frameIndex > 0 {
+				draw.Draw(out, rect, frames[frameIndex-1], image.ZP, draw.Over)
+			}
+			draw.Draw(out, rect, frame, image.ZP, draw.Over)
+			frames[frameIndex] = out
+
+			img := &gif.GIF{
+				Image:           []*image.Paletted{out},
 				BackgroundIndex: target.BackgroundIndex,
 				Config:          target.Config,
 				Delay:           []int{0},
 				Disposal:        []byte{0},
 			}
 			buf := new(bytes.Buffer)
-			err := gif.EncodeAll(buf, image)
+			err := gif.EncodeAll(buf, img)
 			if err != nil {
 				log.Printf("cannot encode gif: %s\n", err)
 				w.WriteHeader(http.StatusInternalServerError)
