@@ -1,23 +1,33 @@
-import * as React from 'react';
-import * as PropTypes from 'prop-types';
-import { withStyles, WithStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
+import * as React from "react";
+import { withStyles, WithStyles, createStyles } from "@material-ui/core/styles";
+import { Theme } from "@material-ui/core/styles/createMuiTheme";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
 
-const styles = {
-  root: {
-    flexGrow: 1,
-  },
+interface OwnProps {
+  hoge: string;
+}
+
+const styles = (theme: Theme) => {
+  return createStyles({
+    layout: {
+      maxWidth: 1200,
+      [theme.breakpoints.up(1200)]: {
+        marginLeft: "auto",
+        marginRight: "auto"
+      }
+    }
+  });
 };
 
-export interface Props extends WithStyles<typeof styles> {}
+type Props = OwnProps & WithStyles<typeof styles>;
 
-function AgifAppBar(props: Props) {
+const AgifAppBar: React.FunctionComponent<Props> = (props: Props) => {
   const { classes } = props;
 
   return (
-    <div className={classes.root}>
+    <div className={classes.layout}>
       <AppBar position="relative">
         <Toolbar>
           <Typography variant="h5" color="inherit">
@@ -27,10 +37,6 @@ function AgifAppBar(props: Props) {
       </AppBar>
     </div>
   );
-}
-
-AgifAppBar.propTypes = {
-  classes: PropTypes.object.isRequired,
-} as any;
+};
 
 export default withStyles(styles)(AgifAppBar);
