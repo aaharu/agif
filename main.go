@@ -7,6 +7,7 @@ import (
 	"image"
 	"image/draw"
 	"image/gif"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -16,7 +17,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
-	// brotli_enc "gopkg.in/kothar/brotli-go.v0/enc"
+	brotli_enc "gopkg.in/kothar/brotli-go.v0/enc"
 )
 
 func main() {
@@ -28,13 +29,13 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID, middleware.RealIP, middleware.Logger, middleware.Recoverer)
 	r.Use(middleware.GetHead, middleware.Timeout(15*time.Second))
-	// compressor := middleware.NewCompressor(7)
-	// compressor.SetEncoder("br", func(w io.Writer, level int) io.Writer {
-	// 	params := brotli_enc.NewBrotliParams()
-	// 	params.SetQuality(level)
-	// 	return brotli_enc.NewBrotliWriter(params, w)
-	// })
-	// r.Use(compressor.Handler())
+	compressor := middleware.NewCompressor(7)
+	compressor.SetEncoder("br", func(w io.Writer, level int) io.Writer {
+		params := brotli_enc.NewBrotliParams()
+		params.SetQuality(level)
+		return brotli_enc.NewBrotliWriter(params, w)
+	})
+	r.Use(compressor.Handler())
 	cors := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "HEAD", "OPTIONS"},
@@ -107,17 +108,28 @@ func main() {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		images := make([]string, 0, len(target.Image))
-		for _, frame := range target.Image {
-			image := &gif.GIF{
-				Image:           []*image.Paletted{frame},
+		frameCount := len(target.Image)
+		frames := make([]*image.Paletted, 0, frameCount)
+		images := make([]string, 0, frameCount)
+		for frameIndex, frame := range target.Image {
+			frames = append(frames, frame)
+			rect := image.Rect(0, 0, target.Config.Width, target.Config.Height)
+			out := image.NewPaletted(rect, frame.Palette)
+			if frameIndex > 0 {
+				draw.Draw(out, rect, frames[frameIndex-1], image.ZP, draw.Over)
+			}
+			draw.Draw(out, rect, frame, image.ZP, draw.Over)
+			frames[frameIndex] = out
+
+			img := &gif.GIF{
+				Image:           []*image.Paletted{out},
 				BackgroundIndex: target.BackgroundIndex,
 				Config:          target.Config,
 				Delay:           []int{0},
 				Disposal:        []byte{0},
 			}
 			buf := new(bytes.Buffer)
-			err := gif.EncodeAll(buf, image)
+			err := gif.EncodeAll(buf, img)
 			if err != nil {
 				log.Printf("cannot encode gif: %s\n", err)
 				w.WriteHeader(http.StatusInternalServerError)
