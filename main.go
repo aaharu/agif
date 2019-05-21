@@ -7,6 +7,7 @@ import (
 	"image"
 	"image/draw"
 	"image/gif"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -16,7 +17,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
-	// brotli_enc "gopkg.in/kothar/brotli-go.v0/enc"
+	brotli_enc "gopkg.in/kothar/brotli-go.v0/enc"
 )
 
 func main() {
@@ -28,13 +29,13 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID, middleware.RealIP, middleware.Logger, middleware.Recoverer)
 	r.Use(middleware.GetHead, middleware.Timeout(15*time.Second))
-	// compressor := middleware.NewCompressor(7)
-	// compressor.SetEncoder("br", func(w io.Writer, level int) io.Writer {
-	// 	params := brotli_enc.NewBrotliParams()
-	// 	params.SetQuality(level)
-	// 	return brotli_enc.NewBrotliWriter(params, w)
-	// })
-	// r.Use(compressor.Handler())
+	compressor := middleware.NewCompressor(7)
+	compressor.SetEncoder("br", func(w io.Writer, level int) io.Writer {
+		params := brotli_enc.NewBrotliParams()
+		params.SetQuality(level)
+		return brotli_enc.NewBrotliWriter(params, w)
+	})
+	r.Use(compressor.Handler())
 	cors := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "HEAD", "OPTIONS"},
