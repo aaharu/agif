@@ -6,11 +6,11 @@ env:
     - GO111MODULE=on
 go_import_path: github.com/aaharu/agif
 before_script:
-  - npm i -g npm
-  - npm ci
+  - npm i -g yarn
+  - yarn
 script:
   - go test -v ./...
-  - npm run build
+  - yarn build
 deploy:
   provider: heroku
   api_key:
