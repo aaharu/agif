@@ -1,0 +1,34 @@
+{
+  "editor.formatOnSave": false,
+  "eslint.enable": true,
+  "eslint.autoFixOnSave": true,
+  "eslint.validate": [
+    {
+      "language": "javascript",
+      "autoFix": true
+    },
+    {
+      "language": "javascriptreact",
+      "autoFix": true
+    },
+    {
+      "language": "typescript",
+      "autoFix": true
+    }
+  ],
+  "vetur.format.enable": true,
+  "vetur.format.defaultFormatter.js": "prettier-eslint",
+  "todo-tree.highlights.defaultHighlight": {
+    "foreground": "yellow",
+    "background": "black"
+  },
+  "todo-tree.highlights.customHighlight": {
+    "FIXME": {
+      "icon": "check",
+      "type": "line"
+    }
+  },
+  "todo-tree.filtering.excludeGlobs": [
+    "node_modules"
+  ]
+}
