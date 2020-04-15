@@ -9,3 +9,5 @@ require (
 	golang.org/x/text v0.3.2 // indirect
 	gopkg.in/kothar/brotli-go.v0 v0.0.0-20170728081549-771231d473d6
 )
+
+// +heroku goVersion go1.14
