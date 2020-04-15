@@ -9,18 +9,18 @@ const useStyles = makeStyles({
   container: {
     display: "flex",
     flexWrap: "wrap",
-    marginBottom: "1.2em"
+    marginBottom: "1.2em",
   },
   card: {
-    textDecoration: "none"
-  }
+    textDecoration: "none",
+  },
 });
 
 function AgifForm() {
   const classes = useStyles();
   const [values, setValues] = React.useState({
     url: "", //https://media.giphy.com/media/BSx6mzbW1ew7K/giphy.gif
-    urlInvalid: false
+    urlInvalid: false,
   });
 
   const handleChange = (name: string) => (event: any) => {
@@ -39,7 +39,7 @@ function AgifForm() {
     <>
       <form
         className={classes.container}
-        onSubmit={e => {
+        onSubmit={(e) => {
           e.preventDefault();
           return false;
         }}

@@ -6,20 +6,6 @@ const onSplitLoad = (): void => {
     alert("empty URL");
     return;
   }
-  if (
-    typeof XMLHttpRequest === "undefined" ||
-    typeof URL === "undefined" ||
-    typeof URL.createObjectURL === "undefined" ||
-    typeof ArrayBuffer === "undefined" ||
-    typeof DataView === "undefined"
-  ) {
-    const a = document.createElement("a");
-    a.setAttribute("href", "/gif/playback/" + url.substr(1));
-    a.textContent = "JavaScriptでの変換に未対応のブラウザです。";
-    document.body.innerHTML = "";
-    document.body.appendChild(a);
-    return;
-  }
   const xhr = new XMLHttpRequest();
   let failed = false;
   xhr.open("GET", url.substr(1), true);
@@ -35,7 +21,7 @@ const onSplitLoad = (): void => {
     xhr.send();
     return true;
   };
-  xhr.onload = e => {
+  xhr.onload = (e) => {
     if (!e.target || !(e.target as any).response) {
       return;
     }
@@ -46,7 +32,7 @@ const onSplitLoad = (): void => {
     if (Worker) {
       // enable web workers
       const worker = new Worker("./task.ts");
-      worker.onmessage = e => {
+      worker.onmessage = (e) => {
         while (content.firstChild) {
           content.removeChild(content.firstChild);
         }
@@ -63,7 +49,7 @@ const onSplitLoad = (): void => {
       while (content.firstChild) {
         content.removeChild(content.firstChild);
       }
-      gif.split(true).forEach(i => {
+      gif.split(true).forEach((i) => {
         const img = new Image(),
           blob = GifPresenter.writeToBlob(i.writeToArrayBuffer());
         img.src = URL.createObjectURL(blob);

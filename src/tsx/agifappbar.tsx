@@ -15,9 +15,9 @@ const styles = (theme: Theme) => {
       maxWidth: 1200,
       [theme.breakpoints.up(1200)]: {
         marginLeft: "auto",
-        marginRight: "auto"
-      }
-    }
+        marginRight: "auto",
+      },
+    },
   });
 };
 

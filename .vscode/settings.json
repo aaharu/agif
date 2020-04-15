@@ -1,20 +1,13 @@
 {
   "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
   "eslint.enable": true,
-  "eslint.autoFixOnSave": true,
   "eslint.validate": [
-    {
-      "language": "javascript",
-      "autoFix": true
-    },
-    {
-      "language": "javascriptreact",
-      "autoFix": true
-    },
-    {
-      "language": "typescript",
-      "autoFix": true
-    }
+      "javascript",
+      "javascriptreact",
+      "typescript",
   ],
   "vetur.format.enable": true,
   "vetur.format.defaultFormatter.js": "prettier-eslint",

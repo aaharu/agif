@@ -7,20 +7,6 @@ const onReverseLoad = () => {
     alert("empty URL");
     return;
   }
-  if (
-    typeof XMLHttpRequest === "undefined" ||
-    typeof URL === "undefined" ||
-    typeof URL.createObjectURL === "undefined" ||
-    typeof ArrayBuffer === "undefined" ||
-    typeof DataView === "undefined"
-  ) {
-    const a = document.createElement("a");
-    a.setAttribute("href", "/gif/playback/" + url.substr(1));
-    a.textContent = "JavaScriptでの変換に未対応のブラウザです。";
-    document.body.innerHTML = "";
-    document.body.appendChild(a);
-    return;
-  }
   const xhr = new XMLHttpRequest();
   let failed = false;
   xhr.open("GET", url.substr(1), true);
@@ -36,7 +22,7 @@ const onReverseLoad = () => {
     xhr.send();
     return true;
   };
-  xhr.onload = e => {
+  xhr.onload = (e) => {
     if (!e.target || !(e.target as any).response) {
       return;
     }
@@ -45,7 +31,7 @@ const onReverseLoad = () => {
     if (Worker) {
       // enable web workers
       const worker = new Worker("./task.ts");
-      worker.onmessage = evt => {
+      worker.onmessage = (evt) => {
         img.src = evt.data.src;
       };
       worker.postMessage({ buffer: arrayBuffer, action: "reverse" });

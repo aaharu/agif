@@ -35,7 +35,7 @@ func main() {
 		params.SetQuality(level)
 		return brotli_enc.NewBrotliWriter(params, w)
 	})
-	r.Use(compressor.Handler())
+	r.Use(compressor.Handler)
 	cors := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "HEAD", "OPTIONS"},
