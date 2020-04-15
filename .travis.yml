@@ -1,11 +1,13 @@
 language: go
 go:
-  - '1.12'
+  - '1.14'
 env:
   global:
     - GO111MODULE=on
 go_import_path: github.com/aaharu/agif
 before_script:
+  - nvm install 12.16.2
+  - nvm use 12.16.2
   - npm i -g yarn
   - yarn
 script:
