@@ -1,9 +1,0 @@
-package.json
-package-lock.json
-src/
-README.md
-.editorconfig
-/bin/
-.cache/
-node_modules/
-tsconfig.json

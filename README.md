@@ -1,10 +1,14 @@
 agif
 ========
 
-[![Build Status](https://travis-ci.org/aaharu/agif.png?branch=master)](https://travis-ci.org/aaharu/agif)
+### Usage
 
-```bash
-yarn build
-go build -o bin/agif -v .
-PORT=3000 heroku local
+[Fresh](https://fresh.deno.dev/)
+
+Start the project:
+
 ```
+deno task start
+```
+
+This will watch the project directory and restart as necessary.
