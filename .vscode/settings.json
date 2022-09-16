@@ -3,25 +3,7 @@
   "editor.codeActionsOnSave": {
     "source.fixAll": true
   },
-  "eslint.enable": true,
-  "eslint.validate": [
-      "javascript",
-      "javascriptreact",
-      "typescript",
-  ],
-  "vetur.format.enable": true,
-  "vetur.format.defaultFormatter.js": "prettier-eslint",
-  "todo-tree.highlights.defaultHighlight": {
-    "foreground": "yellow",
-    "background": "black"
-  },
-  "todo-tree.highlights.customHighlight": {
-    "FIXME": {
-      "icon": "check",
-      "type": "line"
-    }
-  },
-  "todo-tree.filtering.excludeGlobs": [
-    "node_modules"
-  ]
+  "editor.defaultFormatter": "denoland.vscode-deno",
+  "deno.enable": true,
+  "deno.lint": true,
 }
