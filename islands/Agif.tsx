@@ -1,4 +1,5 @@
 import { useRef, useState } from "preact/hooks";
+import { reverse, split } from "https://esm.sh/gifken@3.0.3";
 import { Spinner } from "../components/Spinner.tsx";
 
 export default function Agif() {
@@ -22,34 +23,30 @@ export default function Agif() {
     setImageSrcs([]);
 
     const reader = new FileReader();
-    reader.onload = () => {
-      const worker = new Worker(new URL("/worker.js", import.meta.url).href, {
-        type: "module",
-      });
-      worker.onmessage = (
-        ev: MessageEvent<{
-          src_list: string[];
-        }>,
-      ) => {
-        setBusy(false);
-        setImageSrcs(ev.data.src_list);
-      };
-
+    reader.onload = async () => {
       if (splitRadioRef.current?.checked) {
-        worker.postMessage({
-          buffer: new Uint8Array(reader.result as ArrayBuffer),
-          action: "split",
-        });
+        const buffers = await split(
+          new Uint8Array(reader.result as ArrayBuffer),
+        );
+        setBusy(false);
+        setImageSrcs(
+          buffers.map((buffer) =>
+            URL.createObjectURL(new Blob([buffer], { type: "image/gif" }))
+          ),
+        );
         return;
       }
 
       if (reverseRadioRef.current) {
         reverseRadioRef.current.checked = true;
       }
-      worker.postMessage({
-        buffer: new Uint8Array(reader.result as ArrayBuffer),
-        action: "reverse",
-      });
+      const buffer = await reverse(
+        new Uint8Array(reader.result as ArrayBuffer),
+      );
+      setBusy(false);
+      setImageSrcs([
+        URL.createObjectURL(new Blob([buffer], { type: "image/gif" })),
+      ]);
     };
     reader.readAsArrayBuffer(file);
   };
