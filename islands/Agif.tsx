@@ -1,10 +1,11 @@
 import { useRef, useState } from "preact/hooks";
-import { reverse, split } from "https://esm.sh/gifken@3.0.3";
+import { reverse, split } from "https://esm.sh/gifken@3.0.4";
 import { Spinner } from "../components/Spinner.tsx";
 
 export default function Agif() {
   const [busy, setBusy] = useState(false);
   const [imageSrcs, setImageSrcs] = useState(new Array<string>());
+  const [errorMessages, setErrorMessages] = useState(new Array<string>());
 
   const reverseRadioRef = useRef<HTMLInputElement>(null);
   const splitRadioRef = useRef<HTMLInputElement>(null);
@@ -13,8 +14,15 @@ export default function Agif() {
   const onDrop = (event: DragEvent) => {
     event.preventDefault();
     if (event.dataTransfer?.files?.length && inputRef.current) {
-      inputRef.current.files = event.dataTransfer?.files ?? null;
-      inputRef.current.dispatchEvent(new Event("change"));
+      if (event.dataTransfer?.files.length > 0) {
+        const file = event.dataTransfer?.files[0];
+        if (file.type && file.type !== "image/gif") {
+          setErrorMessages(["Please input gif image."]);
+        } else {
+          inputRef.current.files = event.dataTransfer?.files;
+          inputRef.current.dispatchEvent(new Event("change"));
+        }
+      }
     }
   };
 
@@ -27,13 +35,18 @@ export default function Agif() {
       if (splitRadioRef.current?.checked) {
         const buffers = await split(
           new Uint8Array(reader.result as ArrayBuffer),
-        );
+        ).catch((err) => {
+          setErrorMessages([err.toString()]);
+          return null;
+        });
         setBusy(false);
-        setImageSrcs(
-          buffers.map((buffer) =>
-            URL.createObjectURL(new Blob([buffer], { type: "image/gif" }))
-          ),
-        );
+        if (buffers !== null) {
+          setImageSrcs(
+            buffers.map((buffer) =>
+              URL.createObjectURL(new Blob([buffer], { type: "image/gif" }))
+            ),
+          );
+        }
         return;
       }
 
@@ -42,16 +55,22 @@ export default function Agif() {
       }
       const buffer = await reverse(
         new Uint8Array(reader.result as ArrayBuffer),
-      );
+      ).catch((err) => {
+        setErrorMessages([err.toString()]);
+        return null;
+      });
       setBusy(false);
-      setImageSrcs([
-        URL.createObjectURL(new Blob([buffer], { type: "image/gif" })),
-      ]);
+      if (buffer !== null) {
+        setImageSrcs([
+          URL.createObjectURL(new Blob([buffer], { type: "image/gif" })),
+        ]);
+      }
     };
     reader.readAsArrayBuffer(file);
   };
 
   const onFileChange = (event: Event) => {
+    setErrorMessages([]);
     if (
       event.target instanceof HTMLInputElement && event.target.files?.length
     ) {
@@ -140,6 +159,13 @@ export default function Agif() {
         />
       </label>
 
+      {errorMessages && (
+        <div class="text-center mt-4 text-lg text-red-400 font-bold">
+          {errorMessages.map((message) => {
+            return <p>{message}</p>;
+          })}
+        </div>
+      )}
       {busy && <Spinner class="mx-auto mt-8" />}
       {!busy && imageSrcs.length > 0 && (
         <div
